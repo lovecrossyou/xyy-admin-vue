@@ -270,6 +270,7 @@ export default {
     goProductList(index, row) {
       const shopId = row.id;
       this.fetchProducts(shopId);
+      this.setShop(row);
       this.$router.push({ path: "foodList", query: { shopId } });
     },
     handleEdit(index, row) {

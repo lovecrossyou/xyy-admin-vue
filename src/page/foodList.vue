@@ -240,8 +240,27 @@ export default {
       try {
         this.getMenu();
         this.getFoods();
+        this.getCategory();
       } catch (err) {
         console.log("获取数据失败", err);
+      }
+    },
+    async getCategory(){
+      const shopId = this.shopId;
+      try {
+				const result = await getCategory({ id: shopId });
+				console.log('getCategory ',result);
+        if (result.status == "ok") {
+          result.data.map((item, index) => {
+            item.value = item.id;
+            item.label = item.name;
+          });
+          this.categoryForm.categoryList = result.data;
+        } else {
+          console.log(result);
+        }
+      } catch (err) {
+        console.log(err);
       }
     },
     async getMenu() {
@@ -393,6 +412,7 @@ export default {
   created() {
     if (this.$route.query.shopId) {
       this.shopId = this.$route.query.shopId;
+      console.log('this.shopId ', this.shopId)
     }
     this.initData();
   }
