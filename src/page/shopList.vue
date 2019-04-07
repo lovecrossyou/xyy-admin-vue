@@ -59,23 +59,25 @@
           <template slot-scope="scope">
             <el-button size="mini" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
             <el-button size="mini" type="Success" @click="addFood(scope.$index, scope.row)">添加商品</el-button>
-            <block v-if="scope.row.shopStatus==='已禁用'">
-              <el-button size="mini" type="primary" @click="handleValid(scope.$index, scope.row)">启用</el-button>
-            </block>
-            <block v-else-if="scope.row.shopStatus==='待审核'">
-              <el-button
-                size="mini"
-                type="primary"
-                @click="verifyShop(scope.$index, scope.row)"
-              >通过审核</el-button>
-            </block>
-            <block v-else>
-              <el-button
-                size="mini"
-                type="danger"
-                @click="handleDisable(scope.$index, scope.row)"
-              >禁用</el-button>
-            </block>
+            <el-button
+              v-if="scope.row.shopStatus==='已禁用'"
+              size="mini"
+              type="primary"
+              @click="handleValid(scope.$index, scope.row)"
+            >启用</el-button>
+
+            <el-button
+              v-else-if="scope.row.shopStatus==='待审核'"
+              size="mini"
+              type="primary"
+              @click="verifyShop(scope.$index, scope.row)"
+            >通过审核</el-button>
+            <el-button
+              v-else
+              size="mini"
+              type="danger"
+              @click="handleDisable(scope.$index, scope.row)"
+            >禁用</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -149,6 +151,7 @@
 import { mapState, mapMutations, mapActions } from "vuex";
 import headTop from "../components/headTop";
 import { baseUrl, baseImgPath } from "@/config/env";
+
 import {
   cityGuess,
   getResturants,
@@ -169,7 +172,7 @@ export default {
       offset: 1,
       limit: 20,
       count: 0,
-      tableData: [],
+      // tableData: [],
       currentPage: 1,
       dialogFormVisible: false,
       categoryOptions: [],
@@ -179,11 +182,11 @@ export default {
         user: "",
         region: ""
       },
-      shopImage:'',
+      shopImage: "",
       selectTable: {
         name: "第一个店铺",
         shopType: "convenience_store",
-        imageUrl:"",
+        imageUrl: "",
         presentation: "小本生意，诚信经营",
         locationInfo: {
           longitude: 34.991231,
@@ -191,8 +194,8 @@ export default {
           addressName: "小测试地址名称"
         },
         telephone: "",
-        startOpenTime:'',
-        endOpenTime:'',
+        startOpenTime: "",
+        endOpenTime: ""
       }
     };
   },
@@ -204,20 +207,15 @@ export default {
   },
   methods: {
     ...mapActions({
-      fetchProducts: "shop/fetchProducts"
+      fetchProducts: "shop/fetchProducts",
+      fetchShopList: "shop/fetchShopList"
     }),
     ...mapMutations({
       setShop: "shop/setShop"
     }),
+    onSubmit() {},
     async initData() {
       try {
-        // this.city = await cityGuess();
-        // const countData = await getResturantsCount();
-        // if (countData.status == 1) {
-        //   this.count = countData.count;
-        // } else {
-        //   throw new Error("获取数据失败");
-        // }
         this.getResturants();
       } catch (err) {
         console.log("获取数据失败", err);
@@ -256,29 +254,10 @@ export default {
       }
     },
     async getResturants() {
-      const { latitude, longitude } = this.city;
-      const res = await getResturants({
+      this.fetchShopList({
         page: this.offset,
         pageSize: this.limit
       });
-      this.tableData = res.data.content;
-      // this.tableData = [];
-      // restaurants.forEach(item => {
-      //   const tableData = {};
-      //   tableData.headName = item.name;
-      //   tableData.address = item.address;
-      //   tableData.productDescribe = item.presentation;
-      //   tableData.id = item.id;
-      //   tableData.phone = item.phone;
-      //   tableData.rating = item.score;
-      //   tableData.recent_order_num = item.soldAmount;
-      //   tableData.category = item.shopType;
-      //   tableData.headImage = item.imageUrl;
-      //   tableData.shopSn = item.shopSn;
-      //   tableData.createTime = item.createTime;
-      //   tableData.shopStatus = item.shopStatus;
-      //   this.tableData.push(tableData);
-      // });
     },
     handleSizeChange(val) {
       console.log(`每页 ${val} 条`);
@@ -289,28 +268,26 @@ export default {
       this.getResturants();
     },
     goProductList(index, row) {
-      console.log("row # ", row);
       const shopId = row.id;
       this.fetchProducts(shopId);
       this.$router.push({ path: "foodList", query: { shopId } });
     },
     handleEdit(index, row) {
-
       console.log(row);
-      const {address, id,imageUrl,name,presentation} = row;
+      const { address, id, imageUrl, name, presentation } = row;
       this.selectTable = row;
 
-      console.log('handleEdit ',row);
+      console.log("handleEdit ", row);
       // this.selectTable.name = row.headName;
       // this.selectTable.presentation = row.productDescribe;
       this.selectTable.imageUrl = row.headImage;
 
       this.shopImage = row.headImage;
       this.selectTable.locationInfo = {
-        addressName:address,
-        latitude:0,
-        longitude:0
-      }
+        addressName: address,
+        latitude: 0,
+        longitude: 0
+      };
       this.dialogFormVisible = true;
       // this.selectedCategory = row.category.split("/");
       // if (!this.categoryOptions.length) {
@@ -325,7 +302,7 @@ export default {
       try {
         const res = await verifyShop({
           shopId: row.id,
-          verifyResult:true
+          verifyResult: true
         });
         if (res.status == "ok") {
           this.$message({
@@ -389,14 +366,18 @@ export default {
       }
     },
     addressSelect(vale) {
-      const { address,location } = vale;
-      const latitude = location.split(',')[0];
-      const longitude = location.split(',')[1];
-      this.selectTable.locationInfo = { addressName:address, latitude, longitude };
+      const { address, location } = vale;
+      const latitude = location.split(",")[0];
+      const longitude = location.split(",")[1];
+      this.selectTable.locationInfo = {
+        addressName: address,
+        latitude,
+        longitude
+      };
     },
     handleServiceAvatarScucess(res, file) {
       if (res.status == 0) {
-       console.log('handleServiceAvatarScucess res.data.url',res.data.url);
+        console.log("handleServiceAvatarScucess res.data.url", res.data.url);
         this.shopImage = res.data.url;
         this.selectTable.imageUrl = res.data.url;
       } else {
@@ -418,13 +399,16 @@ export default {
     },
     async updateShop() {
       this.dialogFormVisible = false;
+
       try {
-        // Object.assign(this.selectTable, this.address);
-        // this.selectTable.category = this.selectedCategory.join("/");
+        const {shopType} = this.selectTable ;
+        if(shopType === "便利店"){
 
-        // console.log('params ',this.selectTable);
-        // return;
-
+          this.selectTable.shopType = 'convenience_store';
+        }
+        else{
+          this.selectTable.shopType = 'water_store';
+        }
         const res = await updateResturant(this.selectTable);
         if (res.status == "ok") {
           this.$message({
@@ -442,6 +426,11 @@ export default {
         console.log("更新餐馆信息失败", err);
       }
     }
+  },
+  computed: {
+    ...mapState({
+      tableData: state => state.shop.shopList
+    })
   }
 };
 </script>

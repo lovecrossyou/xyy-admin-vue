@@ -92,7 +92,7 @@
                 v-for="item in menuOptions"
                 :key="item.value"
                 :label="item.label"
-                :value="item.index"
+                :value="item.value"
               ></el-option>
             </el-select>
           </el-form-item>
@@ -104,11 +104,7 @@
               :on-success="handleServiceAvatarScucess"
               :before-upload="beforeAvatarUpload"
             >
-              <img
-                v-if="selectTable.headImage"
-                :src="selectTable.headImage"
-                class="avatar"
-              >
+              <img v-if="selectTable.headImage" :src="selectTable.headImage" class="avatar">
               <i v-else class="el-icon-plus avatar-uploader-icon"></i>
             </el-upload>
           </el-form-item>
@@ -160,7 +156,7 @@
 <script>
 import { mapState, mapMutations, mapActions } from "vuex";
 import headTop from "../components/headTop";
-import { baseUrl, baseImgPath,uploadUrl} from "@/config/env";
+import { baseUrl, baseImgPath, uploadUrl } from "@/config/env";
 import {
   getFoods,
   getFoodsCount,
@@ -168,7 +164,8 @@ import {
   updateFood,
   deleteFood,
   getResturantDetail,
-  getMenuById
+  getMenuById,
+  getCategory
 } from "@/api/getData";
 export default {
   data() {
@@ -185,7 +182,9 @@ export default {
       selectTable: {},
       dialogFormVisible: false,
       menuOptions: [],
-      selectMenu: {},
+      selectMenu: {
+        label:'请选择分类'
+      },
       selectIndex: null,
       specsForm: {
         specs: "",
@@ -202,10 +201,6 @@ export default {
         region: ""
       }
     };
-  },
-  created() {
-    // this.shopId = this.$route.query.shopId;
-    // this.initData();
   },
   computed: {
     count: function() {
@@ -232,14 +227,18 @@ export default {
     headTop
   },
   methods: {
+    // async getCategoryList(){
+    //   const res = await getCategory({
+    //     shopId:this.shopId
+    //   });
+    //   this.menuOptions =res.data;
+    // },
+    onSubmit(){
+
+    },
     async initData() {
       try {
-        // const countData = await getFoodsCount({restaurant_id: this.restaurant_id});
-        // if (countData.status == 1) {
-        //     this.count = countData.count;
-        // }else{
-        //     throw new Error('获取数据失败');
-        // }
+        this.getMenu();
         this.getFoods();
       } catch (err) {
         console.log("获取数据失败", err);
@@ -248,17 +247,18 @@ export default {
     async getMenu() {
       this.menuOptions = [];
       try {
-        const menu = await getMenu({
-          restaurant_id: this.selectTable.restaurant_id,
-          allMenu: true
+        const res = await getCategory({
+          id: this.shopId
         });
-        menu.forEach((item, index) => {
+        if(res.status === 'ok'){
+          res.data.forEach((item, index) => {
           this.menuOptions.push({
             label: item.name,
             value: item.id,
             index
           });
         });
+        }
       } catch (err) {
         console.log("获取商品种类失败", err);
       }
@@ -299,35 +299,35 @@ export default {
       }
     },
     handleEdit(row) {
-      console.log('handleEdit ',row);
+      console.log("handleEdit ", row);
       this.getSelectItemData(row, "edit");
       this.dialogFormVisible = true;
     },
     async getSelectItemData(row, type) {
-      const restaurant = await getResturantDetail(row.restaurant_id);
-      const category = await getMenuById(row.category_id);
+      // const restaurant = await getResturantDetail(row.restaurant_id);
+      // const category = await getMenuById(row.category_id);
       this.selectTable = row;
 
-      this.selectMenu = { label: category.name, value: row.category_id };
-      this.tableData.splice(row.index, 1, { ...this.selectTable });
-      this.$nextTick(() => {
-        this.expendRow.push(row.index);
-      });
-      if (type == "edit" && this.restaurant_id != row.restaurant_id) {
-        this.getMenu();
-      }
+      // this.selectMenu = { label: category.name, value: row.category_id };
+      // this.tableData.splice(row.index, 1, { ...this.selectTable });
+      // this.$nextTick(() => {
+      //   this.expendRow.push(row.index);
+      // });
+      // if (type == "edit" && this.restaurant_id != row.restaurant_id) {
+      //   this.getMenu();
+      // }
     },
     handleSelect(index) {
-      this.selectIndex = index;
-      this.selectMenu = this.menuOptions[index];
+      // this.selectIndex = index;
+      // this.selectMenu = this.menuOptions[index];
     },
     async handleDelete(index, row) {
       try {
-        console.log('row ',row);
+        console.log("row ", row);
         const res = await deleteFood({
-          id:row.id
+          id: row.id
         });
-        if (res.status == 'ok') {
+        if (res.status == "ok") {
           this.$message({
             type: "success",
             message: "删除食品成功"
@@ -368,7 +368,7 @@ export default {
       this.dialogFormVisible = false;
       try {
         const subData = {
-          new_category_id: this.selectMenu.value,
+          categoryId: this.selectMenu.value,
           specs: this.specs
         };
         const postData = { ...this.selectTable, ...subData };
@@ -393,28 +393,6 @@ export default {
   created() {
     if (this.$route.query.shopId) {
       this.shopId = this.$route.query.shopId;
-    } else {
-      return;
-      this.restaurant_id = Math.ceil(Math.random() * 10);
-      this.$msgbox({
-        title: "提示",
-        message: "添加食品需要选择一个商铺，先去就去选择商铺吗？",
-        showCancelButton: true,
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        beforeClose: (action, instance, done) => {
-          if (action === "confirm") {
-            this.$router.push("/shopList");
-            done();
-          } else {
-            this.$message({
-              type: "info",
-              message: "取消"
-            });
-            done();
-          }
-        }
-      });
     }
     this.initData();
   }

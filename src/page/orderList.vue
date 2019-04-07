@@ -99,6 +99,9 @@ export default {
   },
   mounted() {},
   methods: {
+    onSubmit(){
+
+    },
     async initData() {
       try {
         // const countData = await getOrderCount({restaurant_id: this.restaurant_id});
@@ -129,17 +132,6 @@ export default {
       if (res.status !== "ok") return;
       const Orders = res.data.content;
       this.tableData = Orders;
-    //   Orders.forEach((item, index) => {
-    //     const tableData = {};
-    //     tableData.id = item.id;
-    //     tableData.total_amount = item.total_amount;
-    //     tableData.status = item.status_bar.title;
-    //     tableData.user_id = item.user_id;
-    //     tableData.restaurant_id = item.restaurant_id;
-    //     tableData.address_id = item.address_id;
-    //     tableData.index = index;
-    //     this.tableData.push(tableData);
-    //   });
     },
     async expand(row, status) {
       if (status) {

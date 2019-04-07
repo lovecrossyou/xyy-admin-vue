@@ -136,7 +136,9 @@ export const getResturantsCount = () => fetch('/shopping/restaurants/count');
  * 更新餐馆信息
  */
 
-export const updateResturant = data => fetch('/api/admin/shop/create', data, 'POST');
+export const updateResturant = data => fetch('/api/admin/shop/update', data, 'POST');
+
+export const createResturant = data => fetch('/api/admin/shop/create', data, 'POST');
 
 /**
  * 删除餐馆
@@ -179,7 +181,7 @@ export const getMenuById = category_id => fetch('/shopping/v2/menu/' + category_
  * 更新食品信息
  */
 
-export const updateFood = data => fetch('/shopping/v2/updatefood', data, 'POST');
+export const updateFood = data => fetch('/api/admin/shop/editProduct', data, 'POST');
 
 /**
  * 删除食品

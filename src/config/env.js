@@ -12,7 +12,7 @@ let baseImgPath;
 
 if (process.env.NODE_ENV == 'development') {
 	baseUrl = '';
-    baseImgPath = '';
+    baseImgPath = '/static/img/';
 }else{
 	// baseUrl = '//elm.cangdu.org';
 	// baseUrl = '//elm.cangdu.org';

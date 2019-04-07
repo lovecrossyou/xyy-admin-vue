@@ -131,7 +131,7 @@ export default {
         locationInfo: {
           longitude: "",
           latitude: "",
-          addressName: "请选择地址"
+          addressName: ""
         },
         telephone: "",
         startOpenTime: "09:00",
@@ -275,6 +275,8 @@ export default {
               type: "success",
               message: "创建店铺成功"
             });
+            // 刷新店铺列表
+            
             this.resetForm(formName);
           } else {
             this.$message({

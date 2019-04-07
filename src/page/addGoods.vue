@@ -271,7 +271,6 @@ export default {
     submitcategoryForm(categoryForm) {
       this.$refs[categoryForm].validate(async valid => {
         if (valid) {
-					
           const params = {
             name: this.categoryForm.name,
             description: this.categoryForm.description,
@@ -341,9 +340,6 @@ export default {
       return "";
     },
     async addFood(foodForm) {
-
-			console.log('this.categoryForm',this.categoryForm);
-
           const params = {
             ...this.foodForm,
             categoryId: this.categoryForm.categorySelect,
@@ -380,10 +376,6 @@ export default {
           } catch (err) {
             console.log(err);
           }
-        
-      // this.$refs[foodForm].validate(async valid => {
-        
-      // });
     }
   }
 };

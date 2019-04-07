@@ -162,6 +162,12 @@ export default {
 
     async delBanner(index, row) {
       const res = await bannerDel(row.id);
+      if(res.status === 'ok'){
+        this.$message({
+            type: "success",
+            message: "操作成功"
+          });
+      }
       this.getBannerList();
     },
     async editBanner(index, row) {
@@ -208,7 +214,6 @@ export default {
           ...this.formData,
           bannerType:1
         }
-        
         const res = this.formData.id? await bannerEdit(this.formData) : await bannerAdd(this.formData);
         if (res.status == "ok") {
           this.$message({
