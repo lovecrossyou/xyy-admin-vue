@@ -112,18 +112,26 @@
             <el-input v-model="selectTable.telephone"></el-input>
           </el-form-item>
           <el-form-item label="营业时间" label-width="100px">
-            <el-time-picker
-              type="fixed-time"
-              placeholder="选择时间"
+            <el-time-select
               v-model="selectTable.startOpenTime"
-              style="width: 40%;"
-            ></el-time-picker>
-            <el-time-picker
-              type="fixed-time"
+              :picker-options="{
+              start: '06:00',
+              step: '00:15',
+              end: '24:00'
+              }"
               placeholder="选择时间"
+            ></el-time-select>
+
+            <el-time-select
               v-model="selectTable.endOpenTime"
-              style="width: 40%;"
-            ></el-time-picker>
+              :picker-options="{
+              start: '06:00',
+              step: '00:15',
+              end: '24:00',
+              minTime: selectTable.startOpenTime
+            }"
+              placeholder="选择时间"
+            ></el-time-select>
           </el-form-item>
           <el-form-item label="店铺图片" label-width="100px">
             <el-upload
@@ -402,13 +410,11 @@ export default {
       this.dialogFormVisible = false;
 
       try {
-        const {shopType} = this.selectTable ;
-        if(shopType === "便利店"){
-
-          this.selectTable.shopType = 'convenience_store';
-        }
-        else{
-          this.selectTable.shopType = 'water_store';
+        const { shopType } = this.selectTable;
+        if (shopType === "便利店") {
+          this.selectTable.shopType = "convenience_store";
+        } else {
+          this.selectTable.shopType = "water_store";
         }
         const res = await updateResturant(this.selectTable);
         if (res.status == "ok") {
