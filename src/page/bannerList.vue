@@ -98,7 +98,7 @@ import {
 export default {
   data() {
     return {
-      uploadUrl: "/img/manage/qiniu/upload/",
+      uploadUrl: "/api/v1/addimg/food",
       baseImgPath,
       city: {},
       offset: 1,

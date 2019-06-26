@@ -41,7 +41,6 @@ compiler.plugin('compilation', function (compilation) {
 })
 
 const apiPath = "http://0.0.0.0:7001";
-const imgPath = "http://0.0.0.0:7001";
 
 const apiProxy = proxyMiddleware('/api', {
   target: apiPath,
@@ -51,16 +50,6 @@ const apiProxy = proxyMiddleware('/api', {
   }
 });
 app.use('/api/*', apiProxy);//api子目录下的都是用代理
-
-
-const imgProxy = proxyMiddleware('/img', {
-  target: imgPath,
-  changeOrigin: true,
-  pathRewrite: {
-    '^/img': '/', // rewrite path
-  }
-});
-app.use('/img/*', imgProxy);//api子目录下的都是用代理
 
 
 // handle fallback for HTML5 history API
