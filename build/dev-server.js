@@ -30,7 +30,7 @@ var devMiddleware = require('webpack-dev-middleware')(compiler, {
 })
 
 var hotMiddleware = require('webpack-hot-middleware')(compiler, {
-  log: () => {}
+  log: () => { }
 })
 // force page reload when html-webpack-plugin template changes
 compiler.plugin('compilation', function (compilation) {
@@ -40,17 +40,26 @@ compiler.plugin('compilation', function (compilation) {
   })
 })
 
-const apiPath = "http://47.94.169.143:7002";
-const imgPath = "http://47.94.169.143:8004";
+const apiPath = "http://0.0.0.0:7001";
+const imgPath = "http://0.0.0.0:7001";
 
-const apiProxy = proxyMiddleware('/api', { target: apiPath,changeOrigin: true,pathRewrite: {
-  '^/api': '/', // rewrite path
-} });
+const apiProxy = proxyMiddleware('/api', {
+  target: apiPath,
+  changeOrigin: true,
+  pathRewrite: {
+    '^/api': '/', // rewrite path
+  }
+});
 app.use('/api/*', apiProxy);//api子目录下的都是用代理
 
-const imgProxy = proxyMiddleware('/img', { target: imgPath,changeOrigin: true,pathRewrite: {
-  '^/img': '/', // rewrite path
-} });
+
+const imgProxy = proxyMiddleware('/img', {
+  target: imgPath,
+  changeOrigin: true,
+  pathRewrite: {
+    '^/img': '/', // rewrite path
+  }
+});
 app.use('/img/*', imgProxy);//api子目录下的都是用代理
 
 

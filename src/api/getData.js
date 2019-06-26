@@ -4,7 +4,7 @@ import fetch from '@/config/fetch'
  * 登陆
  */
 
-export const login = data => fetch('/api/merchant/shop/user/login', data, 'POST');
+export const login = data => fetch('/api/user/login_wx', data, 'POST');
 
 /**
  * 退出

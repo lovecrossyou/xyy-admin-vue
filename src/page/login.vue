@@ -3,7 +3,7 @@
 	  	<transition name="form-fade" mode="in-out">
 	  		<section class="form_contianer" v-show="showLogin">
 		  		<div class="manage_tip">
-		  			<p>鑫翼优后台管理系统</p>
+		  			<p>任务宝管理平台</p>
 		  		</div>
 		    	<el-form :model="loginForm" :rules="rules" ref="loginForm">
 					<el-form-item prop="username">
@@ -58,12 +58,12 @@
 		methods: {
 			...mapActions(['getAdminData']),
 			async submitForm(formName) {
-			    this.$router.push('manage')
-				return;
+			    // this.$router.push('manage')
+				// return;
 				this.$refs[formName].validate(async (valid) => {
 					if (valid) {
 						const res = await login({username: this.loginForm.username, password: this.loginForm.password,role:1})
-						if (res.status == 'ok') {
+						if (res.status == 1) {
 							this.$message({
 		                        type: 'success',
 		                        message: '登录成功'
