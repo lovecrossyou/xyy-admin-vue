@@ -4,13 +4,20 @@ import fetch from '@/config/fetch'
  * 登陆
  */
 
-export const login = data => fetch('/api/admin/login', data, 'POST');
+export const login = data => fetch('/api/merchant/login', data, 'POST');
+
+// 发送验证码
+export const smssend = data => fetch('/api/sms/send', data, 'POST');
+
+// 添加品牌 category_m/add
+export const addbrand = data => fetch('/api/category_m/add', data, 'POST');
+
 
 /**
  * 退出
  */
 
-export const signout = () => fetch('/api/admin/signout');
+export const signout = () => fetch('/api/merchant/signout');
 
 /**
  * 获取用户信息

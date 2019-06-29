@@ -24,6 +24,10 @@ const sendMessage = r => require.ensure([], () => r(require('@/page/sendMessage'
 const explain = r => require.ensure([], () => r(require('@/page/explain')), 'explain');
 const bannerList = r => require.ensure([], () => r(require('@/page/bannerList')), 'bannerList');
 
+//品牌 
+const brandList = r => require.ensure([], () => r(require('@/page/brandList')), 'brandList');
+
+
 const routes = [
 	{
 		path: '/',
@@ -101,6 +105,10 @@ const routes = [
 			path:'/addWaterQuality',
 			component: addWaterQuality,
 			meta: ['说明', '说明'],
+		},{
+			path: '/brandList',
+			component: brandList,
+			meta: ['数据管理', '品牌列表'],
 		}]
 	}
 ]
