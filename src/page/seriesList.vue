@@ -26,7 +26,7 @@
         <el-table-column label="子系列" width="240" prop="image"></el-table-column>
         <el-table-column label="操作" width="240">
           <template slot-scope="scope">
-            <el-button size="mini" @click="pictureList(scope.$index, scope.row)">图片集</el-button>
+            <el-button size="mini" @click="showPictureList(scope.$index, scope.row)">图片集</el-button>
             <el-button size="mini" @click="editBanner(scope.$index, scope.row)">编辑</el-button>
             <el-button size="mini" type="danger" @click="delbrand(scope.$index, scope.row)">删除</el-button>
           </template>
@@ -81,6 +81,28 @@
           <el-button type="primary" @click="updateBrand">确 定</el-button>
         </div>
       </el-dialog>
+
+      <!-- 图片集 -->
+      <el-dialog title="添加图片" v-model="pictureFormVisible">
+        <el-form :model="formData">
+          <el-form-item label="系列图片" label-width="100px">
+            <el-upload
+              class="avatar-uploader"
+              :action="uploadUrl"
+              :show-file-list="false"
+              :on-success="handleBannerAvatarScucess"
+              :before-upload="beforeAvatarUpload"
+            >
+              <img v-if="bannerImage" :src="bannerImage" class="avatar" />
+              <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+            </el-upload>
+          </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+          <el-button @click="dialogFormVisible = false">取 消</el-button>
+          <el-button type="primary" @click="addPicture">确 定</el-button>
+        </div>
+      </el-dialog>
     </div>
   </div>
 </template>
@@ -102,8 +124,12 @@ export default {
       count: 0,
       tableData: [],
       currentPage: 1,
+      pictureData:{
+
+      },
       dialogFormVisible: false,
       dialogAddFormVisible: false,
+      pictureFormVisible:false,
       categoryOptions: [],
       selectedCategory: [],
       address: {},
@@ -166,6 +192,14 @@ export default {
       console.log(row);
       this.formData = row;
       this.dialogFormVisible = true;
+    },
+    async addPicture(){
+      const res = await addPicture(this.pictureData);
+      
+    },
+    async showPictureList(index,row){
+      this.pictureData = row;
+      this.pictureFormVisible = true;
     },
     async addBanner() {
       this.dialogAddFormVisible = true;
