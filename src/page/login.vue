@@ -32,8 +32,8 @@
 	    data(){
 			return {
 				loginForm: {
-					phone: '',
-					code: '',
+					phone: '18610824157',
+					code: '828054',
 				},
 				rules: {
 					phone: [

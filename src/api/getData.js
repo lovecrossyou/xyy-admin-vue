@@ -12,6 +12,15 @@ export const smssend = data => fetch('/api/sms/send', data, 'POST');
 // 添加品牌 category_m/add
 export const addbrand = data => fetch('/api/category_m/add', data, 'POST');
 
+// 品牌列表
+export const listbrand = id => fetch('/api/category_m/list/'+id);
+
+// 删除 
+export const delbrand = id => fetch('/api/category_m/del/'+id,"","DELETE");
+
+// 编辑 
+export const editbrand = (data) => fetch('/api/category_m/update/'+data.id , data, 'POST');
+
 
 /**
  * 退出

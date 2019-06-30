@@ -3,7 +3,7 @@
     <head-top></head-top>
     <div class="table_container">
       <div style="margin-bottom:20px">
-        <el-button type="primary" @click="addBanner">添加品牌</el-button>
+        <el-button type="primary" @click="addBanner">添加子系列</el-button>
       </div>
       <el-table :data="tableData" style="width: 100%">
         <el-table-column type="expand">
@@ -15,17 +15,18 @@
             </el-form>
           </template>
         </el-table-column>
-        <el-table-column class-name="shop-name" label="名称">
+        <el-table-column width="240" class-name="shop-name" label="名称">
           <template slot-scope="scope">
             <el-button
               type="text"
-              @click="goSeriesList(scope.$index, scope.row)"
+              @click="goProductList(scope.$index, scope.row)"
             >{{scope.row.name}}</el-button>
           </template>
         </el-table-column>
-        <el-table-column label="子系列" width="580" prop="image"></el-table-column>
+        <el-table-column label="子系列" width="240" prop="image"></el-table-column>
         <el-table-column label="操作" width="240">
           <template slot-scope="scope">
+            <el-button size="mini" @click="pictureList(scope.$index, scope.row)">图片集</el-button>
             <el-button size="mini" @click="editBanner(scope.$index, scope.row)">编辑</el-button>
             <el-button size="mini" type="danger" @click="delbrand(scope.$index, scope.row)">删除</el-button>
           </template>
@@ -33,7 +34,7 @@
       </el-table>
 
       <!-- 修改banner信息 -->
-      <el-dialog title="修改banner" v-model="dialogFormVisible">
+      <el-dialog title="修改子系列" v-model="dialogFormVisible">
         <el-form :model="formData">
           <el-form-item label="名称" label-width="100px">
             <el-input v-model="formData.name" auto-complete="off"></el-input>
@@ -53,11 +54,11 @@
         </el-form>
         <div slot="footer" class="dialog-footer">
           <el-button @click="dialogFormVisible = false">取 消</el-button>
-          <el-button type="primary" @click="updateShop">确 定</el-button>
+          <el-button type="primary" @click="updateBrand">确 定</el-button>
         </div>
       </el-dialog>
       <!-- 添加 -->
-      <el-dialog title="添加品牌" v-model="dialogAddFormVisible">
+      <el-dialog title="添加子系列" v-model="dialogAddFormVisible">
         <el-form :model="formData">
           <el-form-item label="名称" label-width="100px">
             <el-input v-model="formData.name" auto-complete="off"></el-input>
@@ -130,10 +131,13 @@ export default {
         name: "",
         image: ""
       },
-      bannerImage: ""
+      bannerImage: "",
+      parentId:0
     };
   },
   created() {
+    const id = this.$route.query.id;
+    this.parentId = id;
     this.initData();
   },
   components: {
@@ -143,9 +147,8 @@ export default {
     async initData() {
       this.listbrand();
     },
-
     async listbrand() {
-      const res = await listbrand(0);
+      const res = await listbrand(this.parentId);
       this.tableData = res.data;
     },
 
@@ -158,11 +161,6 @@ export default {
         });
       }
       this.listbrand();
-    },
-    //子系列
-    async goSeriesList(index,row){
-      console.log('row ', row);
-      this.$router.push({path:"/seriesList",query:{id:row._id}});
     },
     async editBanner(index, row) {
       console.log(row);
@@ -208,7 +206,8 @@ export default {
       try {
         this.formData = {
           ...this.formData,
-          bannerType: 1
+          bannerType: 1,
+          parentId:this.parentId
         };
         const res = this.formData._id
           ? await editbrand(this.formData)

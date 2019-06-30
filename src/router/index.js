@@ -26,6 +26,9 @@ const bannerList = r => require.ensure([], () => r(require('@/page/bannerList'))
 
 //品牌 
 const brandList = r => require.ensure([], () => r(require('@/page/brandList')), 'brandList');
+//系列  
+const seriesList = r => require.ensure([], () => r(require('@/page/seriesList')), 'seriesList');
+
 
 
 const routes = [
@@ -109,7 +112,13 @@ const routes = [
 			path: '/brandList',
 			component: brandList,
 			meta: ['数据管理', '品牌列表'],
-		}]
+		},//
+		{
+			path: '/seriesList',
+			component: seriesList,
+			meta: ['数据管理', '子系列列表'],
+		}
+	]
 	}
 ]
 
