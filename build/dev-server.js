@@ -40,7 +40,7 @@ compiler.plugin('compilation', function (compilation) {
   })
 })
 
-const apiPath = "http://47.94.169.143:7002";
+const apiPath = "http://47.94.169.143:8004";
 const imgPath = "http://47.94.169.143:8004";
 
 const apiProxy = proxyMiddleware('/api', { target: apiPath,changeOrigin: true,pathRewrite: {
